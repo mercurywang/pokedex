@@ -6,7 +6,6 @@ const PokemonList = ({ pokemonList }) => {
     <div className="list-container">
       {pokemonList.map(({ id, name }) => (
         <Link
-          data-testid={name}
           key={id}
           to={`/pokemon/${name}`}
           className="list-item"
