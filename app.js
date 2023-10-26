@@ -11,11 +11,9 @@ app.listen(PORT, () => {
 })
 
 app.get('/version', (req, res) => {
-  res.send('19:00')
+  res.send('11:00')
 })
 
 app.get('/health', (req, res) => {
-  throw 'error...'
-  // eslint-disable-next-line no-unreachable
   res.send('ok')
 })
