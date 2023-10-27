@@ -35,6 +35,11 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
     steps:
+      - name: Create temporary branch
+        run: |
+          git checkout -b temp-test-branch
+        working-directory: ${{ github.workspace }}
+
       - name: Determine version bump
         id: determine_bump
         run: |
@@ -44,10 +49,30 @@ jobs:
 
           echo "::set-output name=bump::$BUMP"
         shell: bash
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.67.0
-        with:
-          DRY_RUN: true
-          DEFAULT_BUMP: ${{ steps.determine_bump.outputs.bump }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version (DRY RUN)
+        run: |
+          # Run the version bumping logic here but don't commit or push changes
+          # This is a placeholder; you should implement your version bump logic.
+
+          # Example:
+          # Increment the version in a file
+          echo "1.2.3" > .version
+        working-directory: ${{ github.workspace }}
+
+      - name: List changes (DRY RUN)
+        run: |
+          git status
+        working-directory: ${{ github.workspace }}
+
+      - name: Clean up (DRY RUN)
+        run: |
+          git reset --hard
+          git clean -df
+        working-directory: ${{ github.workspace }}
+
+      - name: Delete temporary branch
+        run: |
+          git checkout master
+          git branch -D temp-test-branch
+        working-directory: ${{ github.workspace }}
