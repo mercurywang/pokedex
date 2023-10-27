@@ -35,11 +35,6 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
     steps:
-      - name: Create temporary branch
-        run: |
-          git checkout -b temp-test-branch
-        working-directory: ${{ github.workspace }}
-
       - name: Determine version bump
         id: determine_bump
         run: |
