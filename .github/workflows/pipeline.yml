@@ -14,7 +14,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2 # Use the appropriate version, e.g., v3, if needed.
+        uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -36,11 +36,11 @@ jobs:
 
   tag_release:
     needs: [simple_deployment_pipeline]
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '#skip') == false }}
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout code # Add this step to ensure the Git repository is available.
-        uses: actions/checkout@v2 # Use the appropriate version, e.g., v3, if needed.
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.67.0
         env:
