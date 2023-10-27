@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-20.04
     if: ${{ github.event_name == 'push' }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v2 # Use the appropriate version, e.g., v3, if needed.
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
       - name: Install dependencies
@@ -31,10 +33,14 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5001
+
   tag_release:
     needs: [simple_deployment_pipeline]
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout code # Add this step to ensure the Git repository is available.
+        uses: actions/checkout@v2 # Use the appropriate version, e.g., v3, if needed.
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.67.0
         env:
