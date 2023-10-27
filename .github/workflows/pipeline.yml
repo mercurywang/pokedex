@@ -35,9 +35,19 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
     steps:
+      - name: Determine version bump
+        id: determine_bump
+        run: |
+          # Logic to determine the version bump (e.g., based on commit messages)
+          # This is just a placeholder; you need to customize this logic.
+          BUMP=$(echo "patch")
+
+          echo "::set-output name=bump::$BUMP"
+        shell: bash
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.67.0
         with:
-          default_bump: patch
+          DRY_RUN: true
+          DEFAULT_BUMP: ${{ steps.determine_bump.outputs.bump }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
