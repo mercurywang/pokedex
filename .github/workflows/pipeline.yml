@@ -33,25 +33,32 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5001
-      - name: Debug Webhook Info
-        run: |
-          echo "Webhook URL: ${{ secrets.DISCORD_WEBHOOK }}"
-          echo "Payload: {\"severity\":\"info\",\"details\":\"Deployment Successful!\"}"
+      # - name: Debug Webhook Info
+      #   run: |
+      #     echo "Webhook URL: ${{ secrets.DISCORD_WEBHOOK }}"
+      #     echo "Payload: {\"severity\":\"info\",\"details\":\"Deployment Successful!\"}"
+      - name: Notify Success
+        uses: rjstone/discord-webhook-notify@v1.0.4 # Replace with the latest version
+        if: success()
+        with:
+          severity: info
+          details: 'Deployment Successful!'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
-      # - name: Test Success
-      #   uses: rjstone/discord-webhook-notify@v1
-      #   if: success()
-      #   with:
-      #     severity: info
-      #     details: Test Succeeded!
-      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      # - name: Test Failure
-      #   uses: rjstone/discord-webhook-notify@v1
-      #   if: failure()
-      #   with:
-      #     severity: error
-      #     details: Test Failed!
-      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1.0.4
+        if: success()
+        with:
+          severity: info
+          details: Test Succeeded!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1.0.4
+        if: failure()
+        with:
+          severity: error
+          details: Test Failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
