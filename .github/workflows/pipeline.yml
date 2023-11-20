@@ -33,29 +33,34 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5001
-      - name: Test Success
+
+      # tag_release:
+      #   needs: [simple_deployment_pipeline]
+      #   if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '#skip') == false }}
+      #   runs-on: ubuntu-20.04
+      #   steps:
+      #     - name: Checkout code
+      #       uses: actions/checkout@v2
+      #     - name: Bump version and push tag
+      #       uses: anothrNick/github-tag-action@1.67.0
+      #       env:
+      #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Success
         uses: rjstone/discord-webhook-notify@v1
         if: success()
         with:
           severity: info
-          details: Test Succeeded!
+          details: Deployment Successful!
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Failure
+
+      - name: Notify Error
         uses: rjstone/discord-webhook-notify@v1
         if: failure()
         with:
           severity: error
-          details: Test Failed!
+          details: |
+            Build Failed!
+            Commit: ${{ github.sha }}
+            Committer: ${{ github.actor }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-
-  tag_release:
-    needs: [simple_deployment_pipeline]
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '#skip') == false }}
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.67.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
