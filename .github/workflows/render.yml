@@ -19,3 +19,17 @@ jobs:
           retries: 20
           wait: 16000
           sleep: 30000
+      - name: Job Success
+        uses: rjstone/discord-webhook-notify@v1.0.4 # Replace with the latest version
+        if: ${{ success() }}
+        with:
+          severity: info
+          details: 'Deployment Successful!'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Job Failure
+        uses: rjstone/discord-webhook-notify@v1.0.4
+        if: ${{ failure() }}
+        with:
+          severity: error
+          details: Test Failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
